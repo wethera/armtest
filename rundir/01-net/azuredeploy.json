@@ -1,0 +1,46 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "network": {
+      "type": "object"
+    }
+  },
+  "variables": {
+    "virtualNetworkApiVersion": "2020-11-01",
+    "virtualNetworks": "[createArray(parameters('network'))]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Network/virtualNetworks",
+      "name": "[variables('virtualNetworks')[copyIndex()].name]",
+      "apiVersion": "[variables('virtualNetworkApiVersion')]",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "dhcpOptions": {
+            "dnsServers": "[parameters('network').dnsServers]"
+        },
+        "addressSpace": {
+            "addressPrefixes": [
+                "[variables('virtualNetworks')[copyIndex()].addressSpace]"
+            ]
+        },
+        "copy": [
+          {
+            "name": "subnets",
+            "count": "[length(variables('virtualNetworks')[copyIndex()].subnets)]",
+            "input": {
+              "name": "[variables('virtualNetworks')[copyIndex()].subnets[copyIndex('subnets')].name]",
+              "properties": "[variables('virtualNetworks')[copyIndex()].subnets[copyIndex('subnets')].properties]"
+            }
+          }
+        ]
+      },
+      "copy": {
+        "name": "virtualNetworks",
+        "count": "[length(variables('virtualNetworks'))]"
+      }
+    }
+  ],
+  "outputs": {}
+}

@@ -1,0 +1,54 @@
+
+ {
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "network": {
+      "value": {
+        "name": "armtestvnet", 
+        "addressSpace": "10.0.0.0/20", 
+        "dnsServers" : [],
+        "subnets": [
+          {
+            "name": "infra",
+            "properties": {
+              "addressPrefix": "10.0.1.0/26"
+            }
+          },
+          {
+            "name": "login",
+            "properties": {
+              "addressPrefix": "10.0.1.64/26"
+            }
+          },
+          {
+            "name": "anf",
+            "properties": {
+              "addressPrefix": "10.0.1.128/27",
+              "delegations": [
+                {
+                  "name": "NetAppVolumes",
+                  "properties": {
+                    "serviceName": "Microsoft.NetApp/volumes"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "name": "compute",
+            "properties": {
+              "addressPrefix": "10.0.2.0/23"
+            }
+          },
+          {
+            "name": "viz",
+            "properties": {
+              "addressPrefix": "10.0.4.0/24"
+            }
+          }
+        ]
+      }
+    }
+  }
+}

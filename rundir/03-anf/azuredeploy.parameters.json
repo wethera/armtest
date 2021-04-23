@@ -1,0 +1,73 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "storageAccount": {
+        "value": {
+          "name": "anfacct1"
+        }
+      },
+      "storagePools": {
+        "value": [
+          {
+            "name": "pool1",
+            "tier": "Premium",
+            "size": 4
+          }
+        ]
+      },
+      "storageVolumes": {
+        "value": [
+          {
+            "name": "vol1",
+            "capacityPoolName": "pool1",
+            "size": 3072,
+            "protocolTypes": [
+              "NFSv3"
+            ],
+            "exportPolicyRules": [
+              {
+                "ruleIndex": 1,
+                "cifs": false,
+                "nfsv3": true,
+                "nfsv41": false,
+                "unixReadOnly": false,
+                "unixReadWrite": true,
+                "hasRootAccess": true,
+                "allowedClients": "0.0.0.0/0"
+              }
+            ],
+            "kerberosEnabled": false
+          },
+          {
+            "name": "vol2",
+            "capacityPoolName": "pool1",
+            "size": 1024,
+            "protocolTypes": [
+              "NFSv3"
+            ],
+            "exportPolicyRules": [
+              {
+                "ruleIndex": 1,
+                "cifs": false,
+                "nfsv3": true,
+                "nfsv41": false,
+                "unixReadOnly": false,
+                "unixReadWrite": true,
+                "hasRootAccess": true,
+                "allowedClients": "0.0.0.0/0"
+              }
+            ],
+            "kerberosEnabled": false
+          }
+        ]
+      },
+      "virtualNetwork": {
+        "value": {
+          "name": "armtestvnet",
+          "subnetName": "anf",
+          "resourceGroupName": "armtest"
+        }
+      }
+    }
+  }
