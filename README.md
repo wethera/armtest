@@ -3,7 +3,7 @@ Deploys a test environment including VNET, Azure NetApp Files (ANF) , Azure Cycl
 
 ## Introduction
 - This repo contains several ARM templates for deploying various resources into Azure
-- The 01-net template deploys a VNET in the "10.0.0.0/20" address space with 5 separate subnets:
+- The **01-net** template deploys a VNET in the "10.0.0.0/20" address space with 5 separate subnets:
 
   1. `infra`: A 10.0.1.0/26 subnet for infrastructure components
   2. `login`: An optional 10.0.1.64/26 subnet for login serve use
@@ -11,9 +11,9 @@ Deploys a test environment including VNET, Azure NetApp Files (ANF) , Azure Cycl
   4. `compute`: A 10.0.2.0/23 subnet for deploying compute nodes
   5. `viz`: A 10.0.4.0/24 subnet for deploying visualization workstations
 
-- The 02-cycle template deploys an Azure CycleCloud server and storage account using the "infra" subnet.
-- The 03-anf template deploays a NetApp accountm a 4TB storage pool "pool1" wiht a 3TB "vol1" volume and a 1 TB "vol2" volume, both configured for NFS access, in the "anf" subnet.
-- the 04-infra-vm configures a small infrstaructure linux VM runing CentOS 7.8, also in the "infra" subnet.
+- The **02-cycle** template deploys an Azure CycleCloud server and storage account using the `infra` subnet.
+- The **03-anf** template deploys a NetApp account with a 4TB storage pool. The pool "pool1" contains a 1TB "vol1" volume and a 3TB "vol2" volume, both configured for NFS access, in the `anf` subnet.
+- the **04-infra-vm** configures a small infrastructure linux VM runing CentOS 7.8, also in the `infra` subnet.
 
 ## Pre-requisites
 1. Service Principal for CycleCloud
@@ -30,7 +30,7 @@ Deploys a test environment including VNET, Azure NetApp Files (ANF) , Azure Cycl
                 "tenant": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
         }
         ```
-        - Save the output -- you'll need the `appId`, `password` and `tenant`. 
+        - Save the output -- you'll need the `appId`, `secret/password` and `tenantId`. 
 
     - Alternatively, follow these [instructions to create a Service Principal](https://docs.microsoft.com/en-us/azure/azure-resource-manager/resource-group-create-service-principal-portal) 
         -  In this case, the authentication key is the `password`
@@ -42,26 +42,24 @@ Deploys a test environment including VNET, Azure NetApp Files (ANF) , Azure Cycl
     - See [section below](#trouble-with-ssh) for instructions on creating an SSH key if you do not have one.
 
 3. Azure NetApp Files whitelist and RP Registration
+
 Deploying ANF resources currently requires a whitelisting and registration process, outlined below:
 [Azure NetApp Files Whitelist and Registration](https://docs.microsoft.com/en-us/azure/azure-netapp-files/azure-netapp-files-register)
 
-## Deploying the ARM templates:
-
+## Deploy the ARM templates
 * Clone this repo:
 
-        $ git clone https://github.com/CycleCloudCommunity/cyclecloud_arm.git
+        $ git clone https://github.com/wethera/armtest.git
 
 * Edit and update the parameters in the `azuredeploy.parameters.json` files for all sub-directories in the `rundir` directory. This includes changing the names of the variables to conform to your specific naming and network scheme, as well as adding the service principal fields noted in the steps above.
 
 * Run the deployment script to walk through all ARM templates and deploy them - This process takes between 10-15 mins:
 
-        $ chmod +x rundir 
+        $ chmod +x rundir.sh
         $ ./rundir.sh
 
 ## Login to the CycleCloud application server
-
 * To connect to the CycleCloud webserver, first retrieve the IP of the CycleServer VM from the Azure Portal, then browse to https://cycleserverIP/. 
-
 
 * The first time you access the webserver, the Azure CycleCloud End User License Agreement will be displayed, and you will be prompted to accept it.
 
