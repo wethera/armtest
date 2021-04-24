@@ -41,9 +41,9 @@ Deploys a test environment including VNET, Azure NetApp Files (ANF) , Azure Cycl
     - Specify a SSH public key, and that will be used in all VM's. 
     - See [section below](#trouble-with-ssh) for instructions on creating an SSH key if you do not have one.
 
-3. Azure NetApp Files whitelist and RP Registration
+3. Azure NetApp Files whitelist and RP registration
 
-Deploying ANF resources currently requires a whitelisting and registration process, outlined below:
+ - Deploying ANF resources currently requires a whitelisting and registration process, outlined below:
 [Azure NetApp Files Whitelist and Registration](https://docs.microsoft.com/en-us/azure/azure-netapp-files/azure-netapp-files-register)
 
 ## Deploy the ARM templates
