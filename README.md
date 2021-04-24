@@ -43,7 +43,7 @@ Deploys a test environment including VNET, Azure NetApp Files (ANF) , Azure Cycl
 
 3. Azure NetApp Files whitelist and RP registration
 
- - Deploying ANF resources currently requires a whitelisting and registration process, outlined below:
+    - Deploying ANF resources currently requires a whitelisting and registration process, outlined here: 
 [Azure NetApp Files Whitelist and Registration](https://docs.microsoft.com/en-us/azure/azure-netapp-files/azure-netapp-files-register)
 
 ## Deploy the ARM templates
@@ -53,10 +53,10 @@ Deploys a test environment including VNET, Azure NetApp Files (ANF) , Azure Cycl
 
 * Edit and update the parameters in the `azuredeploy.parameters.json` files for all sub-directories in the `rundir` directory. This includes changing the names of the variables to conform to your specific naming and network scheme, as well as adding the service principal fields noted in the steps above.
 
-* Run the deployment script to walk through all ARM templates and deploy them - This process takes between 10-15 mins:
+* From a system that has azcli installed and logged into Azure (or CloudShell), run the `create.sh` deployment script to walk through all ARM templates and deploy them - This process takes between 10-15 mins:
 
-        $ chmod +x rundir.sh
-        $ ./rundir.sh
+        $ chmod +x create.sh
+        $ ./create.sh
 
 ## Login to the CycleCloud application server
 * To connect to the CycleCloud webserver, first retrieve the IP of the CycleServer VM from the Azure Portal, then browse to https://cycleserverIP/. 
