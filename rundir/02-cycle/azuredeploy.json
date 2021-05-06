@@ -138,47 +138,47 @@
             "securityRules": [
             {
                 "name": "AllowSecuredCyclePortalInBound",
-                "properties": {
-                "protocol": "Tcp",
-                "sourcePortRange": "*",
-                "destinationPortRange": "443",
-                "sourceAddressPrefix": "Internet",
-                "destinationAddressPrefix": "VirtualNetwork",
-                "access": "Allow",
-                "priority": 2000,
-                "direction": "Inbound",
-                "sourceAddressPrefixes": [],
-                "destinationAddressPrefixes": []
+                    "properties": {
+                    "protocol": "Tcp",
+                    "sourcePortRange": "*",
+                    "destinationPortRange": "443",
+                    "sourceAddressPrefix": "Internet",
+                    "destinationAddressPrefix": "VirtualNetwork",
+                    "access": "Allow",
+                    "priority": 2000,
+                    "direction": "Inbound",
+                    "sourceAddressPrefixes": [],
+                    "destinationAddressPrefixes": []
                 }
             },
             {
                 "name": "AllowCyclePortalInBound",
-                "properties": {
-                "protocol": "Tcp",
-                "sourcePortRange": "*",
-                "destinationPortRange": "80",
-                "sourceAddressPrefix": "Internet",
-                "destinationAddressPrefix": "VirtualNetwork",
-                "access": "Allow",
-                "priority": 1000,
-                "direction": "Inbound",
-                "sourceAddressPrefixes": [],
-                "destinationAddressPrefixes": []
+                    "properties": {
+                    "protocol": "Tcp",
+                    "sourcePortRange": "*",
+                    "destinationPortRange": "80",
+                    "sourceAddressPrefix": "Internet",
+                    "destinationAddressPrefix": "VirtualNetwork",
+                    "access": "Allow",
+                    "priority": 1000,
+                    "direction": "Inbound",
+                    "sourceAddressPrefixes": [],
+                    "destinationAddressPrefixes": []
                 }
             },
             {
                 "name": "default-allow-ssh",
-                "properties": {
-                "protocol": "Tcp",
-                "sourcePortRange": "*",
-                "destinationPortRange": "22",
-                "sourceAddressPrefix": "*",
-                "destinationAddressPrefix": "*",
-                "access": "Allow",
-                "priority": 3000,
-                "direction": "Inbound",
-                "sourceAddressPrefixes": [],
-                "destinationAddressPrefixes": []
+                    "properties": {
+                    "protocol": "Tcp",
+                    "sourcePortRange": "*",
+                    "destinationPortRange": "22",
+                    "sourceAddressPrefix": "*",
+                    "destinationAddressPrefix": "*",
+                    "access": "Allow",
+                    "priority": 3000,
+                    "direction": "Inbound",
+                    "sourceAddressPrefixes": [],
+                    "destinationAddressPrefixes": []
                 }
             }
             ]
@@ -186,25 +186,30 @@
         "dependsOn": []
         },
         {
-        "type": "Microsoft.Network/publicIPAddresses",
-        "name": "[variables('cycleIPName')]",
-        "apiVersion": "[variables('networkApiVersion')]",
-        "location": "[variables('resourceLocation')]",
-        "properties": {
-            "publicIPAddressVersion": "IPv4",
-            "publicIPAllocationMethod": "Static",
-            "idleTimeoutInMinutes": 4,
-            "dnsSettings": {
-            "domainNameLabel": "[concat('cyclecloud', variables('namingInfix'))]"
-            }
-        },
-        "dependsOn": []
-        },
+            "type": "Microsoft.Storage/storageAccounts",
+            "name": "[parameters('storageAccountName')]",
+            "apiVersion": "2019-06-01",
+            "tags": {
+                "displayName": "[parameters('storageAccountName')]"
+            },
+            "location": "[variables('resourceLocation')]",
+            "kind": "StorageV2",
+            "sku": {
+                "name": "Standard_LRS",
+                "tier": "Standard"
+            },
+            "properties": {
+                "minimumTlsVersion": "TLS1_2",
+                "allowBlobPublicAccess": false,
+                "supportsHttpsTrafficOnly": true
+                }
+            },
         {   "type": "Microsoft.Compute/virtualMachines",
             "name": "[variables('cycleName')]",
             "apiVersion": "[variables('computeApiVersion')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/networkInterfaces', variables('cycleNic'))]"
+                "[resourceId('Microsoft.Network/networkInterfaces', variables('cycleNic'))]",
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]"
             ],
             "location": "[variables('resourceLocation')]",
             "identity": {
@@ -276,7 +281,7 @@
                     "properties": {
                         "autoUpgradeMinorVersion": true,
                         "protectedSettings": {
-                            "commandToExecute": "[concat('python3 cyclecloud_install.py ', '--acceptTerms', ' --applicationSecret ', '\"', parameters('applicationSecret'), '\"', ' --applicationId ', '\"', parameters('applicationId'), '\"', ' --tenantId ', '\"', parameters('tenantId'), '\"', ' --azureSovereignCloud ', '\"', parameters('azureSovereignCloud'), '\"', ' --username ', '\"', parameters('adminUsername'), '\"', ' --password ', '\"', parameters('password'), '\"', ' --publickey ', '\"', parameters('adminPublicKey'), '\"', ' --hostname ', '\"', reference(variables('cycleIPName')).dnsSettings.fqdn, '\"', ' --storageAccount ', '\"', parameters('storageAccountName'), '\"', ' --resourceGroup ', '\"', resourceGroup().name, '\"', variables('letsEncrypt'), ' --webServerPort 80 --webServerSslPort 443 --webServerMaxHeapSize 4096M')]"
+                            "commandToExecute": "[concat('python3 cyclecloud_install.py ', '--acceptTerms', ' --applicationSecret ', '\"', parameters('applicationSecret'), '\"', ' --applicationId ', '\"', parameters('applicationId'), '\"', ' --tenantId ', '\"', parameters('tenantId'), '\"', ' --azureSovereignCloud ', '\"', parameters('azureSovereignCloud'), '\"', ' --username ', '\"', parameters('adminUsername'), '\"', ' --password ', '\"', parameters('password'), '\"', ' --publickey ', '\"', parameters('adminPublicKey'), '\"', ' --hostname ', '\"', variables('cycleIPName'), '\"', ' --storageAccount ', '\"', parameters('storageAccountName'), '\"', ' --resourceGroup ', '\"', resourceGroup().name, '\"', variables('letsEncrypt'), ' --webServerPort 80 --webServerSslPort 443 --webServerMaxHeapSize 4096M')]"
                         },
                         "publisher": "Microsoft.Azure.Extensions",
                         "settings": {
@@ -292,14 +297,17 @@
             "name": "[variables('cycleNic')]",
             "apiVersion": "[variables('networkApiVersion')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/networkSecurityGroups', variables('cycleNsgName'))]",
-                "[resourceId('Microsoft.Network/publicIPAddresses', variables('cycleIPName'))]"
+                "[resourceId('Microsoft.Network/networkSecurityGroups', variables('cycleNsgName'))]"
             ],
             "location": "[variables('resourceLocation')]",
             "properties": {
+                "networkSecurityGroup": {
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('cycleNsgName'))]"
+                },
                 "dnsSettings": {},
                 "enableAcceleratedNetworking": false,
                 "enableIPForwarding": false,
+                "primary": true,
                 "ipConfigurations": [
                     {
                         "name": "ipconfig1",
@@ -307,32 +315,14 @@
                             "primary": true,
                             "privateIPAddressVersion": "IPv4",
                             "privateIPAllocationMethod": "Dynamic",
-                            "publicIPAddress": {
-                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('cycleIPName'))]"
-                            },
                             "subnet": {
                                 "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vnetName'), variables('cycleSubnet'))]"
                             }
                         }
                     }
-                ],
-                "networkSecurityGroup": {
-                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('cycleNsgName'))]"
-                },
-                "primary": true
+                ]
             }
         }
     ],
-    "outputs": {
-        "fqdn": {
-            "value": "[reference(variables('cycleIPName')).dnsSettings.fqdn]",
-            "type": "string"
-        },
-        "ipaddress": {
-            "value": "[reference(variables('cycleIPName')).ipAddress]",
-            "type": "string"
-        }
-    }
-    
+    "outputs": {}
 }
-
