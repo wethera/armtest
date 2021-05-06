@@ -51,7 +51,6 @@
     "vNetName": "[parameters('vnetName')]",
     "vNetSubnetName": "[parameters('subnetName')]",
     "vmName": "[concat(parameters('projectName'), '-infra-vm')]",
-    "publicIPAddressName": "[concat(parameters('projectName'), '-infra-ip')]",
     "networkInterfaceName": "[concat(parameters('projectName'), '-infra-nic')]",
     "networkSecurityGroupName": "[concat(parameters('projectName'), '-infra-nsg')]"
   },
@@ -81,35 +80,22 @@
       }
     },
     {
-      "type": "Microsoft.Network/publicIPAddresses",
-      "apiVersion": "2020-05-01",
-      "name": "[variables('publicIPAddressName')]",
-      "location": "[parameters('location')]",
-      "properties": {
-        "publicIPAllocationMethod": "Dynamic"
-      },
-      "sku": {
-        "name": "Basic"
-      }
-    },
-    {
       "type": "Microsoft.Network/networkInterfaces",
       "apiVersion": "2020-05-01",
       "name": "[variables('networkInterfaceName')]",
       "location": "[parameters('location')]",
       "dependsOn": [
-        "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName'))]",
         "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroupName'))]"
       ],
       "properties": {
+        "networkSecurityGroup": {
+            "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroupName'))]"  
+          },
         "ipConfigurations": [
           {
             "name": "ipconfig1",
             "properties": {
               "privateIPAllocationMethod": "Dynamic",
-              "publicIPAddress": {
-                "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName'))]"
-              },
               "subnet": {
                 "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vNetName'), variables('vNetSubnetName'))]"
               }
