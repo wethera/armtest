@@ -276,7 +276,7 @@ Order = 10
         [[[parameter MaxExecuteCoreCount]]]
         Label = Max Cores
         Description = The total number of execute cores to start
-        DefaultValue = 500
+        DefaultValue = 10000
         Config.Plugin = pico.form.NumberTextBox
         Config.MinValue = 1
         Config.IntegerOnly = true
@@ -284,7 +284,7 @@ Order = 10
         [[[parameter MaxHpc1CoreCount]]]
         Label = Max HPC1 Cores
         Description = The total number of HPC1 cores to start
-        DefaultValue =  500
+        DefaultValue =  10000
         Config.Plugin = pico.form.NumberTextBox
         Config.MinValue = 1
         Config.IntegerOnly = true
@@ -292,7 +292,7 @@ Order = 10
         [[[parameter MaxHpc2CoreCount]]]
         Label = Max HPC2 Cores
         Description = The total number of HPC2 cores to start
-        DefaultValue =  500
+        DefaultValue =  10000
         Config.Plugin = pico.form.NumberTextBox
         Config.MinValue = 1
         Config.IntegerOnly = true
@@ -300,7 +300,7 @@ Order = 10
         [[[parameter MaxHpc3CoreCount]]]
         Label = Max HPC3 Cores
         Description = The total number of HPC3 cores to start
-        DefaultValue =  500
+        DefaultValue =  10000
         Config.Plugin = pico.form.NumberTextBox
         Config.MinValue = 1
         Config.IntegerOnly = true
