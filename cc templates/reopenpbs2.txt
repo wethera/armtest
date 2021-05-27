@@ -2,7 +2,7 @@
 ## Cluster Configuration File ##
 ################################
 
-[cluster ReOpenPBS]
+[cluster ReOpenPBS2]
 FormLayout = selectionpanel
 Category = Schedulers
 
