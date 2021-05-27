@@ -260,7 +260,7 @@ Order = 10
         Label = HPC3 VM Type
         Description = The VM type for HPC nodes
         ParameterType = Cloud.MachineType
-        DefaultValue = Standard_HB44rs
+        DefaultValue = Standard_HC44rs
         Config.Multiselect = true
 
     [[parameters Auto-Scaling]]
