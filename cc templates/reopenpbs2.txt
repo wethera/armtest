@@ -89,6 +89,10 @@ Autoscale = $Autoscale
         PrivatePort = 8652
         PublicPort = 8652
 
+        [[[volume boot]]]
+        Size = 1024
+        StorageAccountType = Premium_LRS
+
         [[[volume sched]]]
         Size = 1024
         SSD = True
