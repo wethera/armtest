@@ -2,7 +2,7 @@
 ## Cluster Configuration File ##
 ################################
 
-[cluster ReOpenPBS2]
+[cluster ReOpenPBS4]
 FormLayout = selectionpanel
 Category = Schedulers
 
@@ -143,6 +143,12 @@ Autoscale = $Autoscale
     MaxCoreCount = $MaxExecuteCoreCount
 
     Interruptible = $UseLowPrio
+    [[[volume boot]]]
+        Size = $NodeLocalDiskVolumeSize
+        StorageAccountType = $NodeLocalDiskStorageType
+        DiskIOPSReadWrite = $NodeLocalDiskIOPS
+        DiskMBPSReadWRite = $NodeLocalDiskMBPS
+
     AdditionalClusterInitSpecs = $ExecuteClusterInitSpecs
 
         [[[configuration]]]
@@ -162,6 +168,11 @@ Autoscale = $Autoscale
     MaxCoreCount = $MaxHpc1CoreCount
 
     Interruptible = $UseLowPrio
+    [[[volume boot]]]
+        Size = $NodeLocalDiskVolumeSize
+        StorageAccountType = $NodeLocalDiskStorageType
+        DiskIOPSReadWrite = $NodeLocalDiskIOPS
+        DiskMBPSReadWRite = $NodeLocalDiskMBPS
     AdditionalClusterInitSpecs = $Hpc1ClusterInitSpecs
 
         [[[configuration]]]
@@ -181,6 +192,11 @@ Autoscale = $Autoscale
     MaxCoreCount = $MaxHpc2CoreCount
 
     Interruptible = $UseLowPrio
+    [[[volume boot]]]
+        Size = $NodeLocalDiskVolumeSize
+        StorageAccountType = $NodeLocalDiskStorageType
+        DiskIOPSReadWrite = $NodeLocalDiskIOPS
+        DiskMBPSReadWRite = $NodeLocalDiskMBPS
     AdditionalClusterInitSpecs = $Hpc2ClusterInitSpecs
 
         [[[configuration]]]
@@ -200,6 +216,11 @@ Autoscale = $Autoscale
     MaxCoreCount = $MaxHpc3CoreCount
 
     Interruptible = $UseLowPrio
+    [[[volume boot]]]
+        Size = $NodeLocalDiskVolumeSize
+        StorageAccountType = $NodeLocalDiskStorageType
+        DiskIOPSReadWrite = $NodeLocalDiskIOPS
+        DiskMBPSReadWRite = $NodeLocalDiskMBPS
     AdditionalClusterInitSpecs = $Hpc3ClusterInitSpecs
 
         [[[configuration]]]
@@ -266,6 +287,34 @@ Order = 10
         ParameterType = Cloud.MachineType
         DefaultValue = Standard_HC44rs
         Config.Multiselect = true
+
+        [[[parameter NodeLocalDiskIOPS]]]
+        Label = Node Local Disk IOPS
+        Description = Provisioned IOPS for local disk on compute nodes
+        ParameterType = Integer
+        DefaultValue = 500
+
+        [[[parameter NodeLocalDiskMBPS]]]
+        Label = Node Local Disk Throughput (MBPS)
+        Description = Provisioned throughput to local disk on compute nodes
+        ParameterType = Integer
+        DefaultValue = 60
+        
+
+        [[[parameter NodeLocalDiskStorageType]]]
+        Label = Node Local Disk Storage Type
+        Description = Storage Type for compute nodes: UltraSSD_LRS, Premium_LRS, StandardSSD_LRS, Standard_LRS
+        ParameterType = StringList
+        Config.Plugin = pico.form.Dropdown
+        Config.Entries := {[Label="UltraSSD_LRS"; Value="UltraSSD_LRS"], [Label="Premium_LRS"; Value="Premium_LRS"],[Label="StandardSSD_LRS"; Value="StandardSSD_LRS"],[Label="Standard_LRS"; Value="Standard_LRS"]}
+        DefaultValue = Standard_LRS
+
+        [[[parameter NodeLocalDiskVolumeSize]]]
+        Label = Node Local Disk Volume Size
+        Description = Size for the local OS Disk for compute nodes (in GB)
+        ParameterType = String
+        DefaultValue = 30
+        
 
     [[parameters Auto-Scaling]]
     Description = "The cluster can autoscale to the workload, adding execute hosts as jobs are queued. To enable this check the box below and choose the initial and maximum core counts for the cluster"
