@@ -107,7 +107,7 @@
             "type": "string"
         },
         "useLetsEncrypt": {
-            "defaultValue": true,
+            "defaultValue": false,
             "type": "bool",
             "metadata": {
                 "description": "Use LetsEncrypt to obtain an SSL certificate for HTTPS. (Requires public IP and Hostname)"
